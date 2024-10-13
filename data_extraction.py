@@ -2,11 +2,12 @@ import yaml
 from sqlalchemy import create_engine
 from sqlalchemy import inspect
 import pandas as pd
+import tabula
 
 
 class DatabaseConnector():
     '''
-    Establishes a connection to AWS for data retrival 
+    Establishes a connection to AWS for data retrieval 
     '''
     
     def __init__(self):
@@ -41,7 +42,7 @@ class DatabaseConnector():
     
     def list_db_tables(self):
         '''
-        Retrives a list of tables from an RDB
+        Retrieves a list of tables from an RDB
         '''
         
         self.engine = self.init_db_engine()
@@ -58,3 +59,7 @@ class DatabaseExtractor():
     def read_rds_table(DatabaseConnector, table):
         df = pd.read_sql_table(table, con = DatabaseConnector.engine, index_col = 0)
         return df
+    
+    def retrieve_pdf_data(link):
+        pdf_data = pd.DataFrame(tabula.read_pdf(link))
+        return pdf_data
