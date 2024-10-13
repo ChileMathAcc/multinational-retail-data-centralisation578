@@ -41,9 +41,5 @@ class DatabaseExtractor():
     
     
     def read_rds_table(DatabaseConnector, table):
-        df = pd.read_sql_table(table, con = DatabaseConnector.engine, index_col = 'index')
+        df = pd.read_sql_table(table, con = DatabaseConnector.engine, index_col = 0)
         return df
-    
-
-D = DatabaseConnector()
-print(DatabaseExtractor.read_rds_table(DatabaseConnector = D, table = D.list_db_tables()[2]).head(5))
