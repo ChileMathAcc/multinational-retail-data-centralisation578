@@ -5,21 +5,30 @@ import pandas as pd
 
 
 class DatabaseConnector():
-    
+    '''
+    Establishes a connection to AWS for data retrival 
+    '''
     
     def __init__(self):
         self.engine = None
         self.db_tables = []
         
     def read_db_creds(self):
+        '''
+        Opens a yaml document with the credentails for the database
+        '''
+        
         with open('db_creds.yaml', 'r') as d:
             db_creds = yaml.safe_load(d)
         return db_creds
     
     
     def init_db_engine(self):
+        '''
+        Uses the credentail from the above method to establish a connect to an RDB
+        '''
+        
         db_creds = self.read_db_creds()
-        #Database connection details
         DATABASE_TYPE = 'postgresql'
         DBAPI = 'psycopg2'
         ENDPOINT = db_creds['RDS_HOST']
@@ -31,6 +40,10 @@ class DatabaseConnector():
         return self.engine
     
     def list_db_tables(self):
+        '''
+        Retrives a list of tables from an RDB
+        '''
+        
         self.engine = self.init_db_engine()
         inspector = inspect(self.engine)
         self.db_tables = inspector.get_table_names()
@@ -38,7 +51,9 @@ class DatabaseConnector():
     
 
 class DatabaseExtractor():
-    
+    '''
+    Uses pandas to create a dataframe from a table in the RDB
+    '''
     
     def read_rds_table(DatabaseConnector, table):
         df = pd.read_sql_table(table, con = DatabaseConnector.engine, index_col = 0)

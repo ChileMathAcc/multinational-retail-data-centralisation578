@@ -9,7 +9,9 @@
 
 ## Project Decription
 
-This project aims to produce a RDB system that stores company data  in a database so that it's accessed from one centralised location and acts as a single source of truth for sales data.
+This project aims to produce a RDB system that stores company data in a database so that it's accessed from one centralised location and acts as a single source of truth for sales data.
+
+It loads in data from an AWS RDB then cleans that data.
 
 In addition queries will be made against this centralised database to get up-to-date metrics for the business.
 
