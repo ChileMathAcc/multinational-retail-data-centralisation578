@@ -13,7 +13,7 @@ class DatabaseExtractor():
         Retrieves a sql table from the RDB as a dataframe
         '''
         
-        df = pd.read_sql_table(table, con = DatabaseConnector.init_db_engine(), index_col = 0)
+        df = pd.read_sql_table(table, con = DatabaseConnector().init_db_engine(), index_col = 0)
         return df
     
     def retrieve_pdf_data(self, link = "https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf"):

@@ -11,6 +11,7 @@ class DatabaseConnector():
     '''
     
     def __init__(self):
+        self.engine = None
         self.db_tables = []
         
     def read_db_creds(self, yaml_file):
@@ -37,6 +38,7 @@ class DatabaseConnector():
         PORT = db_creds['RDS_PORT']
         DATABASE = db_creds['RDS_DATABASE']
         engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}")
+        self.engine = engine
         return engine
     
     def list_db_tables(self):
@@ -49,7 +51,7 @@ class DatabaseConnector():
         self.db_tables = inspector.get_table_names()
         return self.db_tables
     
-    def upload_to_db(dataframe : pd.DataFrame, table_name : str):
+    def upload_to_db(self, dataframe : pd.DataFrame, table_name : str):
         '''
         Inserts a dataframe into a postgres database
         '''
@@ -61,12 +63,12 @@ class DatabaseConnector():
         USER = creds['USER']
         PORT = creds['PORT']
         DATABASE = creds['DATABASE']
-        engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PORT}/{DATABASE}")
+        PASSWORD = creds['PASSWORD']
+        ENDPOINT = creds['ENDPOINT']
+        engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}")
         
-        try:
-            db_conn = engine.connect(dbname='sales_data', user='postgres', host='localhost')
-        except:
-            print("Unable to connect to the database")
+        db_conn = engine.connect()
         with db_conn:
             dataframe.to_sql(name = table_name, con =  db_conn, if_exists = 'replace')
-        db_conn.close()
+            db_conn.close()
+        
