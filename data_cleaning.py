@@ -21,14 +21,13 @@ class data_cleaner():
         '''
         
         D = data_extraction.DatabaseConnector()         #Initialises from DatabaseConnector
-        data = data_extraction.DatabaseExtractor.read_rds_table(DatabaseConnector = D,
-                                                                table = D.list_db_tables()[2])      #Retrieves data in panda format
+        data = data_extraction.DatabaseExtractor.read_rds_table(table = D.list_db_tables()[2])      #Retrieves data in panda format
         data = data.infer_objects()      #Changes the data types of all the string-like columns
         data['date_of_birth'] = pd.to_datetime(data['date_of_birth'], format = 'mixed', errors = 'coerce')      #Changes the data types of the datetime-like column
         data['join_date'] = pd.to_datetime(data['join_date'], format = 'mixed', errors = 'coerce')      #Changes the data types of the datetime-like column
         data = data.dropna(axis=0, how='any')       #Drops NULL values
         data = data.drop_duplicates()       #Drops duplicates
-        return (data, 'user_data')
+        return data
     
     def clean_card_data(link = "https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf"):
         '''
