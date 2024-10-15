@@ -1,4 +1,5 @@
 import data_extraction
+import database_utils
 import pandas as pd
 import numpy as np
 
@@ -104,5 +105,19 @@ class data_cleaner():
         df['date_added'] = pd.to_datetime(df['date_added'], errors = 'coerce', format = 'mixed')
         #Deletes NULL values
         df.dropna(axis = 0, how = 'any', inplace = True)
+        
+        return df
+    
+    def clean_orders_table():
+        '''
+        Cleans the orders table
+        '''
+        
+        #Retreives the list of tables
+        tables = database_utils.DatabaseConnector().list_db_tables()
+        #Load the orders table into a dataframe 
+        df = data_extraction.DatabaseExtractor.read_rds_table(table = tables[3])
+        #Deletes the columns first_name, last_name, level_o and 1
+        df.drop(columns = ['first_name', 'last_name', '1', 'level_0'], axis = 1, inplace = True)
         
         return df
