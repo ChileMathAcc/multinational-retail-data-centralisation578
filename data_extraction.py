@@ -78,7 +78,7 @@ class DatabaseExtractor():
         
         return data
     
-    def extract_from_s3(link = 's3://data-handling-public/products.csv'):
+    def extract_from_s3(link = 's3://data-handling-public/products.csv', file_loc = 'product_info.csv'):
         '''
         Takes a link to a csv file from aws s3 and converts to a dataframe
         '''
@@ -90,9 +90,8 @@ class DatabaseExtractor():
         #Initializes the client
         s3_client = boto3.client('s3')
         #Saves the cvs locally
-        s3_client.download_file(bucket, key, 'product_info.csv')
+        s3_client.download_file(bucket, key, file_loc)
         #Turns the csv to a dataframe
-        product_info = pd.read_csv('product_info.csv')
+        product_info = pd.read_csv(file_loc)
         
         return product_info
-
