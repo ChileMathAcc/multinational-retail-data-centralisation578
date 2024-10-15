@@ -44,8 +44,12 @@ class DatabaseExtractor():
         'x-api-key': f'{api_key}'
         }
         
-        #Sends the request
-        response = requests.get(endpoint, headers = headers)
+        try:
+            #Sends the request
+            response = requests.get(endpoint, headers = headers)
+        except:
+            print(f'Request failed, status code {response}')
+            
         #Retreives the number of stores from a dict
         number_stores = json.loads(response.text)['number_stores']
         
@@ -62,8 +66,13 @@ class DatabaseExtractor():
         'x-api-key': f'{api_key}'
         }
         store_number = 0
-        #Send a request for first(0-th) store information
-        response = requests.get(eval(endpoint), headers = headers)
+        
+        try:
+            #Send a request for first(0-th) store information
+            response = requests.get(eval(endpoint), headers = headers)
+        except:
+            print(f'Request failed, status code {response}')
+            
         store_data = json.loads(response.text)
         #Initializes a dataframe to store store information iteratively
         #Uses a dictionary of lists approach for efficiency
@@ -78,20 +87,24 @@ class DatabaseExtractor():
         
         return data
     
-    def extract_from_s3(link = 's3://data-handling-public/products.csv', file_loc = 'product_info.csv'):
+    def extract_from_s3(self, links = "s3://data-handling-public/products.csv", file_loc = 'product_info.csv'):
         '''
         Takes a link to a csv file from aws s3 and converts to a dataframe
         '''
         
         #Split the link into components (key, bucket, file)
-        link_components = link.split('/')
+        link_components = links.split('/')
         bucket = link_components[2]
         key = link_components[3]
-        #Initializes the client
-        s3_client = boto3.client('s3')
-        #Saves the cvs locally
-        s3_client.download_file(bucket, key, file_loc)
-        #Turns the csv to a dataframe
-        product_info = pd.read_csv(file_loc)
         
+        try:
+            #Initializes the client
+            s3_client = boto3.client('s3')
+            #Saves the cvs locally
+            s3_client.download_file(bucket, key, file_loc)
+            #Turns the csv to a dataframe
+            product_info = pd.read_csv(file_loc)
+        except:
+            print('Failed to connect to S3')
+            
         return product_info
