@@ -1,2 +1,4 @@
 local_db_creds.yaml
 db_creds.yaml
+store_data_API.yaml
+product_info.csv
