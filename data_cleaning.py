@@ -42,3 +42,28 @@ class data_cleaner():
         pdf_data.dropna(axis = 0, how = 'any', inplace = True)          #Deletes NULL values from the dataframe
         
         return pdf_data
+    
+    def clean_store_data():
+        
+        store_data = data_extraction.DatabaseExtractor.retrieve_stores_data()
+        store_data.drop(columns = 'lat', axis = 1, inplace = True)
+        store_data['opening_date'] = pd.to_datetime(store_data['opening_date'], errors = 'coerce', format = 'mixed')
+        store_data.dropna(axis = 0, how = 'any', inplace = True, subset = 'opening_date')
+        
+        return store_data
+    
+    def convert_product_weights(df = data_extraction.DatabaseExtractor.extract_from_s3()):
+        '''
+        
+        '''
+        
+        print(df.head(3))
+        df['weight'] = df['weight'].astype('string')
+        df['weight'] = df['weight'].str.replace('kg','')
+        df['weight'] = df['weight'].str.replace('x', '*')
+        df['weight'] = df['weight'].str.replace('.', '')
+        df['weight'] = df['weight'].str.replace('^0+', '', regex = True)
+        df['weight'] = df['weight'].apply(lambda x: x.replace('g', '* 0.001') if pd.notna(x) and 'g' in x else x)
+        df['weight'] = df['weight'].apply(lambda x: float(eval(x)) if pd.notna(x) and '*' in x else x)
+        
+        return df
