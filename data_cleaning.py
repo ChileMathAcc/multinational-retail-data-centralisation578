@@ -137,8 +137,11 @@ class data_cleaner():
         request = requests.get(link, headers = header)
         #Loads the data from the request
         date_details = pd.DataFrame.from_dict(json.loads(request.text))
+        #Combines the year, month and day columns to a single datetime formatted column
         date_details['time'] = pd.to_datetime(date_details[["year", "month", "day"]], errors = 'coerce', format = 'mixed')
+        #Deletes the year, month and day columns
         date_details.drop(['year', 'month', 'day'], axis = 1, inplace = True)
+        #Deletes rows with NULL values
         date_details.dropna(axis = 0, how = 'any', inplace = True)
         
         return date_details
