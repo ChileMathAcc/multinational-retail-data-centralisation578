@@ -40,9 +40,13 @@ class DatabaseConnector():
         PASSWORD = db_creds['RDS_PASSWORD']
         PORT = db_creds['RDS_PORT']
         DATABASE = db_creds['RDS_DATABASE']
-        #Creates the engine used to connection to the database on the AWS server
-        engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}")
-        self.engine = engine
+        
+        try:
+            #Creates the engine used to connection to the database on the AWS server
+            engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}")
+            self.engine = engine
+        except:
+            print('Failed to connect to AWS')
         
         return engine
     
@@ -72,13 +76,16 @@ class DatabaseConnector():
         DATABASE = creds['DATABASE']
         PASSWORD = creds['PASSWORD']
         ENDPOINT = creds['ENDPOINT']
-        #Create the engine to the local server
-        engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}")
-        #Starts a connection to the local server
-        db_conn = engine.connect()
-        with db_conn:
-            #Uploads a dataframe to the local server
-            dataframe.to_sql(name = table_name, con =  db_conn, if_exists = 'replace')
-            #Closes the connection
-            db_conn.close()
         
+        try:
+            #Create the engine to the local server
+            engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}")
+            #Starts a connection to the local server
+            db_conn = engine.connect()
+            with db_conn:
+                #Uploads a dataframe to the local server
+                dataframe.to_sql(name = table_name, con =  db_conn, if_exists = 'replace')
+                #Closes the connection
+                db_conn.close()
+        except:
+            print('Failed to connect to local database')

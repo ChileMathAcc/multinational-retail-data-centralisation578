@@ -1,17 +1,15 @@
 import data_extraction
 import database_utils
 import pandas as pd
-import numpy as np
 import requests
 import json
 
 
 class data_cleaner():
     '''
-    This takes data from data_exctration and cleans it in one of three ways.
+    This takes data from data_exctration and cleans it in one of two ways.
     1. Changes the data types of the columns
     2. Drops NULL values
-    3. Removes duplicates
     '''
     
     
@@ -76,7 +74,7 @@ class data_cleaner():
         
         return store_data
     
-    def convert_product_weights(df = data_extraction.DatabaseExtractor.extract_from_s3()):
+    def convert_product_weights(df = data_extraction.DatabaseExtractor().extract_from_s3()):
         '''
         Converts the weight units of the weight column to kg
         '''
@@ -137,8 +135,11 @@ class data_cleaner():
         request = requests.get(link, headers = header)
         #Loads the data from the request
         date_details = pd.DataFrame.from_dict(json.loads(request.text))
+        #Combines the year, month and day columns to a single datetime formatted column
         date_details['time'] = pd.to_datetime(date_details[["year", "month", "day"]], errors = 'coerce', format = 'mixed')
+        #Deletes the year, month and day columns
         date_details.drop(['year', 'month', 'day'], axis = 1, inplace = True)
+        #Deletes rows with NULL values
         date_details.dropna(axis = 0, how = 'any', inplace = True)
         
         return date_details
