@@ -2,6 +2,8 @@ import data_extraction
 import database_utils
 import pandas as pd
 import numpy as np
+import requests
+import json
 
 
 class data_cleaner():
@@ -48,13 +50,13 @@ class data_cleaner():
         #Removes digit character 
         pdf_data['card_number'] = pdf_data['card_number'].str.replace('\D+','', regex = True)
         #Converts the type of card_number to integers
-        pdf_data['card_number'] = pd.to_numeric(pdf_data['card_number'], errors = 'coerce', downcast = 'integer').convert_dtypes()      #Converts the card_numbers to int64
+        pdf_data['card_number'] = pd.to_numeric(pdf_data['card_number'], errors = 'coerce', downcast = 'integer').convert_dtypes()
         #Uses the regex %m/%y(MM/YY) to convert the expiry_date
-        pdf_data['expiry_date'] = pd.to_datetime(pdf_data['expiry_date'], format = '%m/%y', errors = 'coerce')      #Converts the card expiry dates to datetime
+        pdf_data['expiry_date'] = pd.to_datetime(pdf_data['expiry_date'], format = '%m/%y', errors = 'coerce')
         #Converts payment dates to datetime
-        pdf_data['date_payment_confirmed'] = pd.to_datetime(pdf_data['date_payment_confirmed'], format = 'mixed', errors = 'coerce')        #Converts payment date to datetime
+        pdf_data['date_payment_confirmed'] = pd.to_datetime(pdf_data['date_payment_confirmed'], format = 'mixed', errors = 'coerce')
         #Deletes NULL values
-        pdf_data.dropna(axis = 0, how = 'any', inplace = True)          #Deletes NULL values from the dataframe
+        pdf_data.dropna(axis = 0, how = 'any', inplace = True)
         
         return pdf_data
     
@@ -121,3 +123,22 @@ class data_cleaner():
         df.drop(columns = ['first_name', 'last_name', '1', 'level_0'], axis = 1, inplace = True)
         
         return df
+    
+    def clean_date_details(link = 'https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json'):
+        '''
+        Cleans date details file
+        '''
+        
+        #Headers for request
+        header = {
+            'Content-Type': 'application/json',
+        }
+        #Request the json file from the link
+        request = requests.get(link, headers = header)
+        #Loads the data from the request
+        date_details = pd.DataFrame.from_dict(json.loads(request.text))
+        date_details['time'] = pd.to_datetime(date_details[["year", "month", "day"]], errors = 'coerce', format = 'mixed')
+        date_details.drop(['year', 'month', 'day'], axis = 1, inplace = True)
+        date_details.dropna(axis = 0, how = 'any', inplace = True)
+        
+        return date_details
