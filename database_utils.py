@@ -1,6 +1,7 @@
 import yaml
 from sqlalchemy import create_engine
 from sqlalchemy import inspect
+import sqlalchemy
 import pandas as pd
 
 
@@ -89,3 +90,31 @@ class DatabaseConnector():
                 db_conn.close()
         except:
             print('Failed to connect to local database')
+            
+    def run_sql_command(self, commands : str):
+        '''
+        Runs a sql command
+        '''
+        
+        #Reads database connection details from a yaml file
+        creds = self.read_db_creds('local_db_creds.yaml')
+        DATABASE_TYPE = creds['DATABASE_TYPE']
+        DBAPI = creds['DBAPI']
+        USER = creds['USER']
+        PORT = creds['PORT']
+        DATABASE = creds['DATABASE']
+        PASSWORD = creds['PASSWORD']
+        ENDPOINT = creds['ENDPOINT']
+        
+        # try:
+            #Create the engine to the local server
+        engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}")
+            #Starts a connection to the local server
+        db_conn = engine.connect()
+        with db_conn:
+                #Execute the command
+            db_conn.execute(sqlalchemy.text(commands.replace('\n', ' ').replace('     ', '')))
+                #Closes the connection
+            db_conn.close()
+        # except:
+            # print('Failed to connect to local database')
