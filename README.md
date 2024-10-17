@@ -3,21 +3,25 @@
 ## Table of contents
 
 1. [Project Description](#project-decription)
-1. [Installation](#installation)
+1. [Installation & Requirements](#installation--requirements)
 1. [Usage/Examples](#usageexamples)
 1. [License](#license)
 
 ## Project Decription
 
-This project aims to produce a RDB system that stores company data in a database so that it's accessed from one centralised location and acts as a single source of truth for sales data.
+This project aims to produce a RDB that stores the company data of a multinational retail organisation. The data will be stored in a singel database so that it's accessed from one centralised location.
 
-It loads in data from an AWS RDB then cleans that data.
+It collects this companpy data from multiple sources; an AWS RDB, s3 bucket, a pdf file etc. It then cleans that data and uploads it to a central local postgresSQL database.
 
-In addition queries will be made against this centralised database to get up-to-date metrics for the business.
+In addition queries will be made against this centralised database to get up-to-date metrics of business performance.
 
-## Installation
+## Installation & Requirements
+
+### Requirements
 
 clone git repo [link](https://github.com/ChileMathAcc/multinational-retail-data-centralisation578.git)
+
+
 
 ## File Structure
 
