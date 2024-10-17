@@ -17,11 +17,19 @@ In addition queries will be made against this centralised database to get up-to-
 
 ## Installation & Requirements
 
+### Installation
+
+clone git repo [link](https://github.com/ChileMathAcc/multinational-retail-data-centralisation578.git).
+
 ### Requirements
 
-clone git repo [link](https://github.com/ChileMathAcc/multinational-retail-data-centralisation578.git)
+The required packages for this a in [this file](requirements.txt).
 
+### Database Setup
 
+1. Create an empty database named "sales_data" on your machine.
+
+2. Create three yaml files; one with the credentails to your local database "sales_data" named (local_db_creds.yaml), one with credentails for the AWS server named (db_creds.yaml), and one the API-key and link to web address (store_data_API.yaml).
 
 ## File Structure
 
@@ -60,7 +68,7 @@ All these methods follow the same scheme.
 
 ```mermaid
 graph LR;
-    m[Load a Dataframe] --> ma[Change Column Data Types] --> mar[Replace Using Regular Expressions] --> mark[Remove NULL Values];
+    m[Load a Dataframe] --> ma[Format Entries] --> mar[Change Column Data Types] --> mark[Remove NULL Values];
 ```
 
 4. ### main.py
@@ -76,7 +84,16 @@ graph LR;
 
 ## Usage/Examples
 
-Run The main.py file
+
+- Running the [main.py](main.py) file should upload tables to your sales_data database. If success full, there will be six tables.
+
+![Tables in database](Images\image.png)
+
+- Running the commands in the sql file [retail.session.sql](retail.session.sql), gives the columns in the tables appropriate types. It also sets up a star-based database schema for our tables.
+
+![Star Schema](Images\sales_data_STAR.png)
+
+- Multiple queries can then be run on this database some of these queries and there results can be found in the folder "Milestone 4 Queries"
 
 ## License
 
