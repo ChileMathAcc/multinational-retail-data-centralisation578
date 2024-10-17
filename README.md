@@ -87,11 +87,11 @@ graph LR;
 
 - Running the [main.py](main.py) file should upload tables to your sales_data database. If success full, there will be six tables.
 
-![Tables in database](Images\image.png)
+<img src="Images\image.png"/>
 
 - Running the commands in the sql file [retail.session.sql](retail.session.sql), gives the columns in the tables appropriate types. It also sets up a star-based database schema for our tables.
 
-![Star Schema](Images\sales_data_STAR.png)
+<img src="Images\sales_data_STAR.png"/>
 
 - Multiple queries can then be run on this database some of these queries and there results can be found in the folder "Milestone 4 Queries"
 
